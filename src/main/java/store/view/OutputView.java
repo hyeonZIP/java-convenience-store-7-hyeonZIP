@@ -9,6 +9,7 @@ public class OutputView {
     private static final String LINE_SEPARATOR = "\n";
     private static final String WELCOME_MESSAGE = "안녕하세요. W편의점입니다.\n현재 보유하고 있는 상품입니다.";
     private static final String DECIMAL_FORMAT = "#,###";
+    private static final String ASK_BUYING_ITEM = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat(DECIMAL_FORMAT);
 
 
@@ -26,6 +27,7 @@ public class OutputView {
         for (Item item : inventory) {
             wholeInventory.append(formatInventory(item)).append(LINE_SEPARATOR);
         }
+        wholeInventory.append(LINE_SEPARATOR).append(ASK_BUYING_ITEM);
         System.out.println(wholeInventory);
     }
 

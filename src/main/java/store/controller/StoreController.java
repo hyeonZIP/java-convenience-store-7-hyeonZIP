@@ -18,6 +18,7 @@ public class StoreController {
     public void beforeRun() {
         try {
             BufferedReader inventory = storeService.loadInventory();
+            storeService.saveInventory(inventory);
         } catch (IOException e) {
 
         }

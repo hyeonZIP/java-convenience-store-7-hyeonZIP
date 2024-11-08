@@ -3,17 +3,22 @@ package store;
 import store.controller.StoreController;
 import store.model.Items;
 import store.service.StoreService;
+import store.validator.StoreValidator;
+import store.view.InputView;
 import store.view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
         OutputView outputView = new OutputView();
+        InputView inputView = new InputView();
 
         Items items = new Items();
 
-        StoreService storeService = new StoreService(items);
+        StoreValidator storeValidator = new StoreValidator();
 
-        StoreController storeController = new StoreController(outputView, storeService);
+        StoreService storeService = new StoreService(items, storeValidator);
+
+        StoreController storeController = new StoreController(outputView, inputView, storeService);
         storeController.beforeRun();
         storeController.run();
     }

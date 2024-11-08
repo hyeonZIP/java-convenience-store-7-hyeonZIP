@@ -26,9 +26,7 @@ class StoreServiceTest {
     @DisplayName("재고 파일 불러오기 테스트")
     void loadInventory() throws IOException {
         BufferedReader inventory = storeService.loadInventory();
-
         String expected = "콜라,1000,10,탄산2+1";
-
         assertThat(inventory.readLine()).contains(expected);
     }
 
@@ -36,10 +34,8 @@ class StoreServiceTest {
     @DisplayName("재고 파일 저장 테스트")
     void saveInventory() throws IOException {
         String inputFile = "콜라,1000,10,탄산2+1";
-
         BufferedReader inventory = new BufferedReader(new StringReader(inputFile));
         storeService.saveInventory(inventory);
-
         for (Item item : items.getItems()) {
             assertThat(item.getName()).isEqualTo("콜라");
             assertThat(item.getPrice()).isEqualTo(1000);

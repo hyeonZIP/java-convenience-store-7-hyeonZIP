@@ -1,12 +1,27 @@
 package store.controller;
 
+import store.service.StoreService;
 import store.view.OutputView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class StoreController {
     private final OutputView outputView;
+    private final StoreService storeService;
 
-    public StoreController(OutputView outputView) {
+    public StoreController(OutputView outputView, StoreService storeService) {
         this.outputView = outputView;
+        this.storeService = storeService;
+    }
+
+    public void beforeRun() {
+        try {
+            BufferedReader inventory = storeService.loadInventory();
+        } catch (IOException e) {
+
+        }
+
     }
 
     public void run() {

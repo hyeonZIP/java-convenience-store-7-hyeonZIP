@@ -20,7 +20,6 @@ public class StoreService {
     public BufferedReader loadInventory() throws IOException {
         BufferedReader inventory = new BufferedReader(new FileReader(INVENTORY_PATH));
         inventory.readLine();
-
         return inventory;
     }
 
@@ -30,5 +29,9 @@ public class StoreService {
             List<String> item = List.of(line.split(","));
             items.add(new Item(item));
         }
+    }
+
+    public List<Item> getInventory() {
+        return items.getItems();
     }
 }

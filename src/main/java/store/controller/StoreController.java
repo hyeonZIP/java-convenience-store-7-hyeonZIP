@@ -35,7 +35,8 @@ public class StoreController {
             List<Item> inventory = storeService.getInventory();
             outputView.welcomeMessageAndInventory(inventory);
 
-            findItem();
+            //일단 해당하는 물품이 있고 수량도 만족하는 List<Item>을 가져옴 ,날짜 검증 아직임
+            List<Item> items = findItem();
 
             break;//구매 종료 분기 코드 작성 이전까지 임시 사용
         }

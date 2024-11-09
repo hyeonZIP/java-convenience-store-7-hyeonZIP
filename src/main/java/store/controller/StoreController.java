@@ -8,7 +8,6 @@ import store.view.OutputView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class StoreController {
     private final OutputView outputView;
@@ -23,6 +22,8 @@ public class StoreController {
 
     public void beforeRun() {
         try {
+            BufferedReader promotions = storeService.loadPromotions();
+            storeService.savePromotions(promotions);
             BufferedReader inventory = storeService.loadInventory();
             storeService.saveInventory(inventory);
         } catch (IOException e) {
@@ -40,7 +41,7 @@ public class StoreController {
         }
     }
 
-    private Map<String, Integer> findItem() {
+    private List<Item> findItem() {
         while (true) {
             try {
                 String nameAndQuantity = inputView.askNameAndQuantity();

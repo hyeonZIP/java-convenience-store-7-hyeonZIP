@@ -9,8 +9,9 @@ import store.validator.StoreValidator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StoreService {
     private static final String PROMOTIONS_PATH = "src/main/resources/promotions.md";
@@ -62,27 +63,26 @@ public class StoreService {
         return items.getItems();
     }
 
-    public List<Item> findItem(final String nameAndQuantity) {
+    public Map<List<Item>, Integer> findItem(final String nameAndQuantity) {
         storeValidator.validateFormat(nameAndQuantity);
         String replacedItem = nameAndQuantity.replace(LEFT_BRAKET, BLANK).replace(RIGHT_BRAKET, BLANK);
-
-        List<Item> itemFormat = new ArrayList<>();
+        Map<List<Item>, Integer> itemFormat = new HashMap<>();
         List<String> items = List.of(replacedItem.split(COMMA));
         storeValidator.validateDuplicate(items);
         for (String item : items) {
-            itemFormat.addAll(splitHyphen(item));
+            itemFormat.putAll(splitHyphen(item));
         }
         return itemFormat;
     }
 
-    private List<Item> splitHyphen(final String replacedItem) {
+    private Map<List<Item>, Integer> splitHyphen(final String replacedItem) {
         List<String> nameQuantity = List.of(replacedItem.split(HYPHEN));
         return checkNameAndQuantity(nameQuantity);
     }
 
-    private List<Item> checkNameAndQuantity(final List<String> nameQuantity) {
+    private Map<List<Item>, Integer> checkNameAndQuantity(final List<String> nameQuantity) {
         String name = nameQuantity.getFirst();
         int quantity = Integer.parseInt(nameQuantity.getLast());
-        return items.checkNameAndQuantity(name, quantity);
+        return Map.of(items.checkNameAndQuantity(name, quantity), quantity);
     }
 }

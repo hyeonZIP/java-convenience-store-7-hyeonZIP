@@ -8,6 +8,7 @@ import store.view.OutputView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class StoreController {
     private final OutputView outputView;
@@ -35,14 +36,13 @@ public class StoreController {
             List<Item> inventory = storeService.getInventory();
             outputView.welcomeMessageAndInventory(inventory);
 
-            //일단 해당하는 물품이 있고 수량도 만족하는 List<Item>을 가져옴 ,날짜 검증 아직임
-            List<Item> items = findItem();
+            Map<List<Item>, Integer> inventoryAndQuantity = findItem();
 
             break;//구매 종료 분기 코드 작성 이전까지 임시 사용
         }
     }
 
-    private List<Item> findItem() {
+    private Map<List<Item>, Integer> findItem() {
         while (true) {
             try {
                 String nameAndQuantity = inputView.askNameAndQuantity();

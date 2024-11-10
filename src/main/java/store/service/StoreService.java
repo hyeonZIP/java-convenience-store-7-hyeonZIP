@@ -101,6 +101,7 @@ public class StoreService {
 
     public void makeReceiptBeforeMembership(EnumMap<Item.PromotionResult, String> promotionResult) {
         store.updateReceipt(promotionResult);
+        store.updateInventory(promotionResult);
     }
 
     private LocalDate getDate() {

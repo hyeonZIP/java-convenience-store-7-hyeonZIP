@@ -28,6 +28,34 @@ public class Items {
         return foundItems;
     }
 
+    public void updateInventory(final String name, final int quantity) {
+        Item promotionItem = getPromotionItem(name);
+        Item normalItem = getNormalItem(name);
+
+        if (promotionItem.getQuantity() < quantity) {
+            normalItem.updateQuantity(quantity - promotionItem.getQuantity());
+            promotionItem.updateQuantity(promotionItem.getQuantity());
+        }
+    }
+
+    private Item getPromotionItem(String name) {
+        for (Item item : items) {
+            if (item.getName().equals(name) && !item.getPromotion().equals("null")) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private Item getNormalItem(String name) {
+        for (Item item : items) {
+            if (item.getName().equals(name) && item.getPromotion().equals("null")) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     private void equalsName(Item item, List<Item> foundItems, String name) {
         if (item.getName().equals(name)) {
             foundItems.add(item);

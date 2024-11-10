@@ -52,6 +52,12 @@ public class Store {
         //멤버십 할인은 프로모션 할인 적용 후의 금액에 할인
     }
 
+    public void updateInventory(EnumMap<Item.PromotionResult, String> promotionResult) {
+        String itemName = promotionResult.get(Item.PromotionResult.ITEM_NAME);
+        String itemCount = promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY);
+        items.updateInventory(itemName, Integer.parseInt(itemCount));
+    }
+
     private Item getPromotionItem(List<Item> items) {
         for (Item item : items) {
             if (!item.getPromotion().equals("null")) {

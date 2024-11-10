@@ -32,6 +32,10 @@ public class Item {
         return promotion;
     }
 
+    public void updateQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
+
     public EnumMap<PromotionResult, String> deductPromotionItem(int requestQuantity, int buy, int get) {
         EnumMap<PromotionResult, String> result = new EnumMap<>(PromotionResult.class);
         result.put(PromotionResult.ITEM_NAME, name);

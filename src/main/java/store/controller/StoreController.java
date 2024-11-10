@@ -1,6 +1,8 @@
 package store.controller;
 
 import store.model.Item;
+import store.model.SelectItem;
+import store.model.Store;
 import store.service.StoreService;
 import store.view.InputView;
 import store.view.OutputView;
@@ -41,6 +43,10 @@ public class StoreController {
 
             saleItem(inventoryAndQuantity);
 
+            EnumMap<Store.Receipt, Integer> receipt = storeService.getReceipt();
+            List<SelectItem> selectItem = storeService.getSelectList();
+            outputView.printResult(receipt, selectItem);
+            outputView.askAdditionalBuy();
             break;//구매 종료 분기 코드 작성 이전까지 임시 사용
         }
     }
@@ -58,17 +64,19 @@ public class StoreController {
 
     private void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
         for (Map.Entry<List<Item>, Integer> entry : inventoryAndQuantity.entrySet()) {
-            boolean promotionDate = storeService.isPromotionDate(entry.getKey());//프로모션 기간일 경우 true/기간이 아니거나 프로모션이 존재하지 않을 경우 false
-            EnumMap<Item.PromotionResult, String> promotionResult;//프로모션 재고에서 요구수량을 뺸 값
+            boolean promotionDate = storeService.isPromotionDate(entry.getKey());
+            EnumMap<Item.PromotionResult, String> promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());
             if (promotionDate) {
-                promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());
                 askCustomerChoice(promotionResult);
             }
-            outputView.askMembership();
-            String yesOrNo = inputView.askMembership();
-            if (yesOrNo.equals("Y")) {
-                storeService.applyMembership();
+            if (!promotionDate) {
+                storeService.makeReceiptBeforeMembership(promotionResult);
             }
+        }
+        outputView.askMembership();
+        String yesOrNo = inputView.askMembership();
+        if (yesOrNo.equals("Y")) {
+            storeService.applyMembership();
         }
     }
 

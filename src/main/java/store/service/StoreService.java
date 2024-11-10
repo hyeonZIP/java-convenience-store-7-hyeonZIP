@@ -5,6 +5,7 @@ import store.model.Item;
 import store.model.Items;
 import store.model.Promotion;
 import store.model.Promotions;
+import store.model.SelectItem;
 import store.model.Store;
 import store.validator.StoreValidator;
 
@@ -106,6 +107,14 @@ public class StoreService {
 
     public void applyMembership() {
         store.applyMembership();
+    }
+
+    public EnumMap<Store.Receipt, Integer> getReceipt() {
+        return store.getReceipt();
+    }
+
+    public List<SelectItem> getSelectList() {
+        return store.getSelectedItem();
     }
 
     private LocalDate getDate() {

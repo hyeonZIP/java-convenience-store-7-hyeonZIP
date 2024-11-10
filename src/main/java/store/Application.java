@@ -3,6 +3,7 @@ package store;
 import store.controller.StoreController;
 import store.model.Items;
 import store.model.Promotions;
+import store.model.SelectItems;
 import store.model.Store;
 import store.service.StoreService;
 import store.validator.StoreValidator;
@@ -15,7 +16,8 @@ public class Application {
         InputView inputView = new InputView();
         Promotions promotions = new Promotions();
         Items items = new Items();
-        Store store = new Store(items, promotions);
+        SelectItems selectItems = new SelectItems();
+        Store store = new Store(items, promotions, selectItems);
         StoreValidator storeValidator = new StoreValidator();
         StoreService storeService = new StoreService(promotions, items, store, storeValidator);
         StoreController storeController = new StoreController(outputView, inputView, storeService);

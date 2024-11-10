@@ -1,8 +1,11 @@
 package store.view;
 
 import store.model.Item;
+import store.model.SelectItem;
+import store.model.Store;
 
 import java.text.DecimalFormat;
+import java.util.EnumMap;
 import java.util.List;
 
 public class OutputView {
@@ -14,6 +17,16 @@ public class OutputView {
     private static final String OUT_OF_STOCK_PROMOTION = "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)";
     private static final String FREE_ITEM = "현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니가? (Y/N)";
     private static final String ASK_MEMBER_SHIP = "멤버십 할인을 받으시겠습니까? (Y/N)";
+    private static final String RECEIPT_HEADER = "==============W 편의점================";
+    private static final String ITEM_HEADER = "상품명\t\t수량\t\t금액";
+    private static final String PROMOTION = "=============증\t정===============";
+    private static final String SEPARATOR = "====================================";
+    private static final String TOTAL_PRICE = "총구매액\t\t";
+    private static final String PROMOTION_DISCOUNT = "행사할인\t\t\t";
+    private static final String MEMBERSHIP_DISCOUNT = "멤버십할인\t\t\t";
+    private static final String PAID_MONEY = "내실돈\t\t\t ";
+    private static final String ASK_ADDITIONAL_BUY = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
+
 
     public void outOfPromotion(String itemName, int nonDiscountCount) {
         System.out.println(String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
@@ -26,6 +39,29 @@ public class OutputView {
     public void welcomeMessageAndInventory(List<Item> inventory) {
         printWelcomeMessage();
         printInventory(inventory);
+    }
+
+    public void printResult(EnumMap<Store.Receipt, Integer> result, List<SelectItem> selectList) {
+        System.out.println(RECEIPT_HEADER);
+        System.out.println(ITEM_HEADER);
+        for (SelectItem selectItem : selectList) {
+            System.out.println(selectItem.getName() + "\t\t\t" + selectItem.getQuantity() + "\t" + selectItem.getPrice() * selectItem.getQuantity());
+        }
+        System.out.println(PROMOTION);
+        for (SelectItem selectItem : selectList) {
+            if (selectItem.getPromotion() != 0) {
+                System.out.println(selectItem.getName() + "\t\t\t" + selectItem.getPromotion());
+            }
+        }
+        System.out.println(SEPARATOR);
+        System.out.println(TOTAL_PRICE + result.get(Store.Receipt.TOTAL_ITEM_COUNT) + result.get(Store.Receipt.TOTAL_PRICE));
+        System.out.println(PROMOTION_DISCOUNT + result.get(Store.Receipt.PROMOTION_DISCOUNT));
+        System.out.println(MEMBERSHIP_DISCOUNT + result.get(Store.Receipt.MEMBERSHIP_DISCOUNT));
+        System.out.println(PAID_MONEY + result.get(Store.Receipt.PAID_MONEY));
+    }
+
+    public void askAdditionalBuy() {
+        System.out.println(ASK_ADDITIONAL_BUY);
     }
 
     public void askMembership() {

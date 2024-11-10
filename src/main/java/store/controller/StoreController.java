@@ -64,7 +64,7 @@ public class StoreController {
                 promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());
                 askCustomerChoice(promotionResult);
             }
-
+            outputView.askMembership();
         }
     }
 

@@ -13,6 +13,7 @@ public class OutputView {
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat(DECIMAL_FORMAT);
     private static final String OUT_OF_STOCK_PROMOTION = "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)";
     private static final String FREE_ITEM = "현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니가? (Y/N)";
+    private static final String ASK_MEMBER_SHIP = "멤버십 할인을 받으시겠습니까? (Y/N)";
 
     public void outOfPromotion(String itemName, int nonDiscountCount) {
         System.out.println(String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
@@ -25,6 +26,10 @@ public class OutputView {
     public void welcomeMessageAndInventory(List<Item> inventory) {
         printWelcomeMessage();
         printInventory(inventory);
+    }
+
+    public void askMembership() {
+        System.out.println(ASK_MEMBER_SHIP);
     }
 
     private void printWelcomeMessage() {

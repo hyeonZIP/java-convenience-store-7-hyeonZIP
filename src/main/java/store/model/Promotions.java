@@ -11,11 +11,11 @@ public class Promotions {
         this.promotions = new ArrayList<>();
     }
 
-    public void add(Promotion promotion) {
+    public void add(final Promotion promotion) {
         promotions.add(promotion);
     }
 
-    public Promotion getPromotion(String promotionName) {
+    public Promotion getPromotion(final String promotionName) {
         for (Promotion promotion : promotions) {
             if (promotion.getName().equals(promotionName)) {
                 return promotion;
@@ -24,16 +24,12 @@ public class Promotions {
         return null;
     }
 
-    public boolean isPromotionDate(String promotionName, LocalDate currentDate) {
+    public boolean isPromotionDate(final String promotionName, final LocalDate currentDate) {
         for (Promotion promotion : promotions) {
             if (promotion.getName().equals(promotionName)) {
                 return currentDate.isAfter(promotion.getStartDate()) && currentDate.isBefore(promotion.getEndDate());
             }
         }
         return false;
-    }
-
-    public List<Integer> getBuyAndGet(Promotion promotion) {
-        return List.of(promotion.getBuy(), promotion.getGet());
     }
 }

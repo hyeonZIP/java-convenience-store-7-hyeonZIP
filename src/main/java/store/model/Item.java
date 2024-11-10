@@ -7,6 +7,7 @@ public class Item {
     private final String name;
     private final int price;
     private final String promotion;
+    EnumMap<PromotionResult, String> result = new EnumMap<>(PromotionResult.class);
     private int quantity;
 
     public Item(List<String> items) {
@@ -37,7 +38,6 @@ public class Item {
     }
 
     public EnumMap<PromotionResult, String> deductPromotionItem(int requestQuantity, int buy, int get) {
-        EnumMap<PromotionResult, String> result = new EnumMap<>(PromotionResult.class);
         result.put(PromotionResult.ITEM_NAME, name);
         int remainQuantity = quantity / (buy + get) * (buy + get) - requestQuantity;
         result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(remainQuantity));
@@ -50,6 +50,14 @@ public class Item {
         }
         result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
         result.put(PromotionResult.ITEM_PRICE, String.valueOf(price));
+        return result;
+    }
+
+    public EnumMap<PromotionResult, String> deductNormalItem(int requestQuantity) {
+        result.put(PromotionResult.ITEM_NAME, name);
+        result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
+        result.put(PromotionResult.ITEM_PRICE, String.valueOf(price));
+        System.out.println(result);
         return result;
     }
 

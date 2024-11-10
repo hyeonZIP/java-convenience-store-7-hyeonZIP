@@ -1,14 +1,14 @@
 package store.service;
 
-import store.model.Item;
-import store.model.Items;
-import store.model.Promotion;
-import store.model.Promotions;
+import camp.nextstep.edu.missionutils.DateTimes;
+import store.model.*;
 import store.validator.StoreValidator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +21,16 @@ public class StoreService {
     private static final String HYPHEN = "-";
     private static final String LEFT_BRAKET = "[";
     private static final String RIGHT_BRAKET = "]";
+    private static final String DATE_FORMATTER = "yyyy-MM-dd";
     private final Items items;
     private final Promotions promotions;
+    private final Store store;
     private final StoreValidator storeValidator;
 
-    public StoreService(final Promotions promotions, final Items items, final StoreValidator storeValidator) {
+    public StoreService(final Promotions promotions, final Items items, final Store store, final StoreValidator storeValidator) {
         this.promotions = promotions;
         this.items = items;
+        this.store = store;
         this.storeValidator = storeValidator;
     }
 
@@ -73,6 +76,16 @@ public class StoreService {
             itemFormat.putAll(splitHyphen(item));
         }
         return itemFormat;
+    }
+
+    public void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
+        String nowDate = getDate();
+    }
+
+    private String getDate() {
+        LocalDateTime currentDate = DateTimes.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+        return currentDate.format(formatter);
     }
 
     private Map<List<Item>, Integer> splitHyphen(final String replacedItem) {

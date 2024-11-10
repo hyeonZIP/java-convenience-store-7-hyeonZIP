@@ -38,6 +38,8 @@ public class StoreController {
 
             Map<List<Item>, Integer> inventoryAndQuantity = findItem();
 
+            saleItem(inventoryAndQuantity);
+
             break;//구매 종료 분기 코드 작성 이전까지 임시 사용
         }
     }
@@ -47,6 +49,16 @@ public class StoreController {
             try {
                 String nameAndQuantity = inputView.askNameAndQuantity();
                 return storeService.findItem(nameAndQuantity);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
+        while (true) {
+            try {
+                storeService.saleItem(inventoryAndQuantity);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }

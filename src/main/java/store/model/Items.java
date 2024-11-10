@@ -38,11 +38,12 @@ public class Items {
             return;
         }
         if (promotionItem != null && promotionItem.getQuantity() >= quantity) {
-            promotionItem.updateQuantity(promotionItem.getQuantity() - quantity);
+            promotionItem.updateQuantity(quantity);
             return;
         }
         if (normalItem.getQuantity() >= quantity) {
-            normalItem.updateQuantity(normalItem.getQuantity() - quantity);
+            normalItem.updateQuantity(quantity);
+
         }
     }
 

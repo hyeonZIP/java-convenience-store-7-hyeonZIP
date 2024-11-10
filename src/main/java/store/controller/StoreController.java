@@ -36,23 +36,32 @@ public class StoreController {
 
     public void run() {
         while (true) {
-            List<Item> inventory = storeService.getInventory();
-            outputView.welcomeMessageAndInventory(inventory);
-
+            displayInventory();
             Map<List<Item>, Integer> inventoryAndQuantity = findItem();
-
             saleItem(inventoryAndQuantity);
-
-            EnumMap<Store.Receipt, Integer> receipt = storeService.getReceipt();
-            List<SelectItem> selectItem = storeService.getSelectList();
-            storeService.resetSelectList();
-            outputView.printResult(receipt, selectItem);
-            outputView.askAdditionalBuy();
-            String yesOrNo = inputView.askAdditionalBuy();
-            if (yesOrNo.equals("N")) {
+            displayReceipt();
+            if (!askAdditionalBuy()) {
                 break;
             }
         }
+    }
+
+    private boolean askAdditionalBuy() {
+        outputView.askAdditionalBuy();
+        String yesOrNo = inputView.askAdditionalBuy();
+        return yesOrNo.equals("Y");
+    }
+
+    private void displayInventory() {
+        List<Item> inventory = storeService.getInventory();
+        outputView.welcomeMessageAndInventory(inventory);
+    }
+
+    private void displayReceipt() {
+        EnumMap<Store.Receipt, Integer> receipt = storeService.getReceipt();
+        List<SelectItem> selectItem = storeService.getSelectList();
+        outputView.printResult(receipt, selectItem);
+        storeService.resetSelectList();
     }
 
     private Map<List<Item>, Integer> findItem() {
@@ -67,16 +76,27 @@ public class StoreController {
     }
 
     private void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
+        processQuantity(inventoryAndQuantity);
+        handleMembership();
+    }
+
+    private void processQuantity(Map<List<Item>, Integer> inventoryAndQuantity) {
         for (Map.Entry<List<Item>, Integer> entry : inventoryAndQuantity.entrySet()) {
             boolean promotionDate = storeService.isPromotionDate(entry.getKey());
             EnumMap<Item.PromotionResult, String> promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue(), promotionDate);
-            if (promotionDate) {
-                askCustomerChoice(promotionResult);
-            }
-            if (!promotionDate) {
-                storeService.makeReceiptBeforeMembership(promotionResult);
-            }
+            handlePromotion(promotionDate, promotionResult);
         }
+    }
+
+    private void handlePromotion(boolean promotionDate, EnumMap<Item.PromotionResult, String> promotionResult) {
+        if (promotionDate) {
+            askCustomerChoice(promotionResult);
+            return;
+        }
+        storeService.makeReceiptBeforeMembership(promotionResult);
+    }
+
+    private void handleMembership() {
         outputView.askMembership();
         String yesOrNo = inputView.askMembership();
         if (yesOrNo.equals("Y")) {
@@ -87,27 +107,39 @@ public class StoreController {
     private void askCustomerChoice(EnumMap<Item.PromotionResult, String> promotionResult) {
         try {
             if (storeService.checkPromotionState(promotionResult)) {
-                outputView.outOfPromotion(promotionResult.get(Item.PromotionResult.ITEM_NAME), Math.abs(Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT))));
-                String yesOrNo = inputView.askBuyingNoDiscountItem();
-                if (yesOrNo.equals("N")) {
-                    return;
-                }
-                storeService.makeReceiptBeforeMembership(promotionResult);
-                return;
+                handleOutOfPromotion(promotionResult);
             }
             if (storeService.checkGettingFreeItem(promotionResult)) {
-                outputView.freeItem(promotionResult.get(Item.PromotionResult.ITEM_NAME));
-                String yesOrNo = inputView.askGetFreeItem();
-                if (yesOrNo.equals("Y")) {
-                    promotionResult.put(Item.PromotionResult.REQUEST_QUANTITY, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY)) + 1));
-                    promotionResult.put(Item.PromotionResult.DISCOUNT_COUNT, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT) + 1)));
-                }
-                storeService.makeReceiptBeforeMembership(promotionResult);
-                return;
+                handleFreeItem(promotionResult);
             }
             storeService.makeReceiptBeforeMembership(promotionResult);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void handleOutOfPromotion(EnumMap<Item.PromotionResult, String> promotionResult) {
+        outputView.outOfPromotion(promotionResult.get(Item.PromotionResult.ITEM_NAME),
+                Math.abs(Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT))));
+        String yesOrNo = inputView.askBuyingNoDiscountItem();
+        if (yesOrNo.equals("Y")) {
+            storeService.makeReceiptBeforeMembership(promotionResult);
+        }
+    }
+
+    private void handleFreeItem(EnumMap<Item.PromotionResult, String> promotionResult) {
+        outputView.freeItem(promotionResult.get(Item.PromotionResult.ITEM_NAME));
+        String yesOrNo = inputView.askGetFreeItem();
+        if (yesOrNo.equals("Y")) {
+            updatePromotionResult(promotionResult);
+        }
+        storeService.makeReceiptBeforeMembership(promotionResult);
+    }
+
+    private void updatePromotionResult(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int requestQuantity = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY)) + 1;
+        promotionResult.put(Item.PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
+        int discountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT)) + 1;
+        promotionResult.put(Item.PromotionResult.DISCOUNT_COUNT, String.valueOf(discountCount));
     }
 }

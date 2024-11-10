@@ -7,68 +7,47 @@ import java.util.List;
 public class Store {
     private final Items items;
     private final Promotions promotions;
-    private SelectItems selectItems;
+    private ReceiptItems receiptItems;
     private EnumMap<Receipt, Integer> receipt = new EnumMap<>(Receipt.class);
     private int membership;
 
-    public Store(Items items, Promotions promotions, SelectItems selectItems) {
+    public Store(final Items items, final Promotions promotions, final ReceiptItems receiptItems) {
         this.items = items;
         this.promotions = promotions;
         this.membership = 0;
-        this.selectItems = selectItems;
+        this.receiptItems = receiptItems;
     }
 
-    public boolean isPromotionDate(List<Item> items, LocalDate currentDate) {
+    public boolean isPromotionDate(final List<Item> items, final LocalDate currentDate) {
         Item promotionItem = getPromotionItem(items);
-        if (promotionItem != null) {
-            return promotions.isPromotionDate(promotionItem.getPromotion(), currentDate);
-        }
-        return false;
+        return promotionItem != null && promotions.isPromotionDate(promotionItem.getPromotion(), currentDate);
     }
 
-    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity, Boolean promotionDate) {
+    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(final List<Item> items, final int quantity, final Boolean promotionDate) {
         Item promotionItem = getPromotionItem(items);
-        Item normalItem = getNormalItem(items);
         if (promotionItem != null && promotionDate) {
             Promotion promotion = getPromotion(promotionItem);
-            int buy = promotion.getBuy();
-            int get = promotion.getGet();
-            return promotionItem.deductPromotionItem(quantity, buy, get);
+            return promotionItem.deductPromotionItem(quantity, promotion.getBuy(), promotion.getGet());
         }
+        Item normalItem = getNormalItem(items);
         return normalItem.deductNormalItem(quantity);
     }
 
-    public void updateReceipt(EnumMap<Item.PromotionResult, String> promotionResult) {
-        int addTotalCItemCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY));
-        receipt.put(Receipt.TOTAL_ITEM_COUNT, receipt.getOrDefault(Receipt.TOTAL_ITEM_COUNT, 0) + addTotalCItemCount);
-
-        int itemPrice = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
-        int itemQuantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
-        receipt.put(Receipt.TOTAL_PRICE, receipt.getOrDefault(Receipt.TOTAL_PRICE, 0) + itemPrice * itemQuantity);
-
-        int itemDiscountCount = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, "0"));
-        receipt.put(Receipt.PROMOTION_DISCOUNT, receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0) + itemPrice * itemDiscountCount);
-
-        int totalPrice = receipt.getOrDefault(Receipt.TOTAL_PRICE, 0);
-        int promotionDiscount = receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0);
-        receipt.put(Receipt.PAID_MONEY, totalPrice - promotionDiscount);
-
-        String itemName = promotionResult.getOrDefault(Item.PromotionResult.ITEM_NAME, "");
-        int quantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
-        int price = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
-        int promotion = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, "0"));
-        selectItems.add(new SelectItem(itemName, quantity, price, promotion));
-        if (promotionResult.get(Item.PromotionResult.IS_PROMOTION).equals("N")) {
-            receipt.put(Receipt.NON_PROMOTION_PRICE, receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0) + price * quantity);
-        }
+    public void updateReceipt(final EnumMap<Item.PromotionResult, String> promotionResult) {
+        updateTotalItemCount(promotionResult);
+        updateTotalPrice(promotionResult);
+        updatePromotionDiscount(promotionResult);
+        updatePaidMoney();
+        updateReceiptItems(promotionResult);
+        updateNonPromotionPrice(promotionResult);
     }
 
     public void resetSelectList() {
-        this.selectItems = new SelectItems();
+        this.receiptItems = new ReceiptItems();
         this.receipt = new EnumMap<>(Receipt.class);
     }
 
-    public void updateInventory(EnumMap<Item.PromotionResult, String> promotionResult) {
+    public void updateInventory(final EnumMap<Item.PromotionResult, String> promotionResult) {
         String itemName = promotionResult.get(Item.PromotionResult.ITEM_NAME);
         String itemCount = promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY);
         items.updateInventory(itemName, Integer.parseInt(itemCount));
@@ -86,11 +65,11 @@ public class Store {
         return receipt;
     }
 
-    public List<SelectItem> getSelectedItem() {
-        return selectItems.getSelectedList();
+    public List<ReceiptItem> getSelectedItem() {
+        return receiptItems.getSelectedList();
     }
 
-    private Item getPromotionItem(List<Item> items) {
+    private Item getPromotionItem(final List<Item> items) {
         for (Item item : items) {
             if (!item.getPromotion().equals("null")) {
                 return item;
@@ -99,7 +78,7 @@ public class Store {
         return null;
     }
 
-    private Item getNormalItem(List<Item> items) {
+    private Item getNormalItem(final List<Item> items) {
         for (Item item : items) {
             if (item.getPromotion().equals("null")) {
                 return item;
@@ -108,8 +87,47 @@ public class Store {
         return null;
     }
 
-    private Promotion getPromotion(Item promotionItem) {
+    private Promotion getPromotion(final Item promotionItem) {
         return promotions.getPromotion(promotionItem.getPromotion());
+    }
+
+    private void updateTotalItemCount(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int addTotalCItemCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY));
+        receipt.merge(Receipt.TOTAL_ITEM_COUNT, addTotalCItemCount, Integer::sum);
+    }
+
+    private void updateTotalPrice(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int itemPrice = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
+        int itemQuantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
+        receipt.merge(Receipt.TOTAL_PRICE, itemPrice * itemQuantity, Integer::sum);
+    }
+
+    private void updatePromotionDiscount(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int itemDiscountCount = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, "0"));
+        int itemPrice = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
+        receipt.merge(Receipt.PROMOTION_DISCOUNT, itemPrice * itemDiscountCount, Integer::sum);
+    }
+
+    private void updatePaidMoney() {
+        int totalPrice = receipt.getOrDefault(Receipt.TOTAL_PRICE, 0);
+        int promotionDiscount = receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0);
+        receipt.put(Receipt.PAID_MONEY, totalPrice - promotionDiscount);
+    }
+
+    private void updateReceiptItems(EnumMap<Item.PromotionResult, String> promotionResult) {
+        String itemName = promotionResult.getOrDefault(Item.PromotionResult.ITEM_NAME, "");
+        int quantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
+        int price = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
+        int promotion = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, "0"));
+        receiptItems.add(new ReceiptItem(itemName, quantity, price, promotion));
+    }
+
+    private void updateNonPromotionPrice(EnumMap<Item.PromotionResult, String> promotionResult) {
+        if (promotionResult.get(Item.PromotionResult.IS_PROMOTION).equals("N")) {
+            int price = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
+            int quantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
+            receipt.put(Receipt.NON_PROMOTION_PRICE, receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0) + price * quantity);
+        }
     }
 
     public enum Receipt {

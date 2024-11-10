@@ -45,7 +45,7 @@ public class Item {
         int calculatePromotionNumber = Math.min(quantity, requestQuantity);
         result.put(PromotionResult.DISCOUNT_COUNT, String.valueOf(calculatePromotionNumber / (buy + get)));
         int nonDiscountCount = calculatePromotionNumber % (buy + get);//할인 못받는 갯수
-        result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(nonDiscountCount));
+        result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(remainQuantity));
         if (nonDiscountCount == buy) {
             result.put(PromotionResult.FREE_ITEM, "1");
         }

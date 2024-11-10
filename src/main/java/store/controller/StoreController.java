@@ -65,6 +65,10 @@ public class StoreController {
                 askCustomerChoice(promotionResult);
             }
             outputView.askMembership();
+            String yesOrNo = inputView.askMembership();
+            if (yesOrNo.equals("Y")) {
+                storeService.applyMembership();
+            }
         }
     }
 
@@ -72,8 +76,8 @@ public class StoreController {
         try {
             if (storeService.checkPromotionState(promotionResult)) {
                 outputView.outOfPromotion(promotionResult.get(Item.PromotionResult.ITEM_NAME), Math.abs(Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT))));
-                String YesOrNo = inputView.askBuyingNoDiscountItem();
-                if (YesOrNo.equals("N")) {
+                String yesOrNo = inputView.askBuyingNoDiscountItem();
+                if (yesOrNo.equals("N")) {
                     return;
                 }
                 storeService.makeReceiptBeforeMembership(promotionResult);
@@ -81,13 +85,15 @@ public class StoreController {
             }
             if (storeService.checkGettingFreeItem(promotionResult)) {
                 outputView.freeItem(promotionResult.get(Item.PromotionResult.ITEM_NAME));
-                String YesOrNo = inputView.askGetFreeItem();
-                if (YesOrNo.equals("Y")) {
+                String yesOrNo = inputView.askGetFreeItem();
+                if (yesOrNo.equals("Y")) {
                     promotionResult.put(Item.PromotionResult.REQUEST_QUANTITY, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY)) + 1));
                     promotionResult.put(Item.PromotionResult.DISCOUNT_COUNT, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT) + 1)));
                 }
                 storeService.makeReceiptBeforeMembership(promotionResult);
+                return;
             }
+            storeService.makeReceiptBeforeMembership(promotionResult);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }

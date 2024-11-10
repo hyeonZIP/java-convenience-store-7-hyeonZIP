@@ -104,6 +104,10 @@ public class StoreService {
         store.updateInventory(promotionResult);
     }
 
+    public void applyMembership() {
+        store.applyMembership();
+    }
+
     private LocalDate getDate() {
         LocalDateTime currentDate = DateTimes.now();
         return currentDate.toLocalDate();

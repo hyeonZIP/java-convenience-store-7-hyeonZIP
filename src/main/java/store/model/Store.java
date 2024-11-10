@@ -58,6 +58,13 @@ public class Store {
         items.updateInventory(itemName, Integer.parseInt(itemCount));
     }
 
+    public void applyMembership() {
+        int paidMoney = receipt.get(Receipt.PAID_MONEY);
+        int membershipDiscount = paidMoney * 30 / 100;
+        receipt.put(Receipt.MEMBERSHIP_DISCOUNT, membershipDiscount);
+        receipt.put(Receipt.PAID_MONEY, paidMoney - membershipDiscount);
+    }
+
     private Item getPromotionItem(List<Item> items) {
         for (Item item : items) {
             if (!item.getPromotion().equals("null")) {

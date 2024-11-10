@@ -45,6 +45,7 @@ public class StoreController {
 
             EnumMap<Store.Receipt, Integer> receipt = storeService.getReceipt();
             List<SelectItem> selectItem = storeService.getSelectList();
+            storeService.resetSelectList();
             outputView.printResult(receipt, selectItem);
             outputView.askAdditionalBuy();
             String yesOrNo = inputView.askAdditionalBuy();

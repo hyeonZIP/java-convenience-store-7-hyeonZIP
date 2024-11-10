@@ -87,6 +87,10 @@ public class StoreService {
         return store.isPromotionDate(items, getDate());
     }
 
+    public void resetSelectList() {
+        store.resetSelectList();
+    }
+
     public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity) {
         return store.getRequestedQuantity(items, quantity);
     }

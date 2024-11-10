@@ -7,7 +7,7 @@ import java.util.List;
 public class Store {
     private final Items items;
     private final Promotions promotions;
-    private final SelectItems selectItems;
+    private SelectItems selectItems;
     private EnumMap<Receipt, Integer> receipt = new EnumMap<>(Receipt.class);
     private int membership;
 
@@ -61,6 +61,11 @@ public class Store {
         if (promotionResult.get(Item.PromotionResult.IS_PROMOTION).equals("N")) {
             receipt.put(Receipt.NON_PROMOTION_PRICE, receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0) + price * quantity);
         }
+    }
+
+    public void resetSelectList() {
+        this.selectItems = new SelectItems();
+        this.receipt = new EnumMap<>(Receipt.class);
     }
 
     public void updateInventory(EnumMap<Item.PromotionResult, String> promotionResult) {

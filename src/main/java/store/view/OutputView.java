@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OutputView {
     private static final String LINE_SEPARATOR = "\n";
-    private static final String WELCOME_MESSAGE = "안녕하세요. W편의점입니다.\n현재 보유하고 있는 상품입니다.";
+    private static final String WELCOME_MESSAGE = "\n안녕하세요. W편의점입니다.\n현재 보유하고 있는 상품입니다.";
     private static final String DECIMAL_FORMAT = "#,###";
     private static final String ASK_BUYING_ITEM = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat(DECIMAL_FORMAT);
@@ -27,9 +27,8 @@ public class OutputView {
     private static final String PAID_MONEY = "내실돈\t\t\t ";
     private static final String ASK_ADDITIONAL_BUY = "\n감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
 
-
     public void outOfPromotion(String itemName, int nonDiscountCount) {
-        System.out.println(String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
+        System.out.println(LINE_SEPARATOR + String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
     }
 
     public void freeItem(String itemName) {

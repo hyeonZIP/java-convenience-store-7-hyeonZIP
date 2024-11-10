@@ -1,14 +1,19 @@
 package store.service;
 
 import camp.nextstep.edu.missionutils.DateTimes;
-import store.model.*;
+import store.model.Item;
+import store.model.Items;
+import store.model.Promotion;
+import store.model.Promotions;
+import store.model.Store;
 import store.validator.StoreValidator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,14 +83,17 @@ public class StoreService {
         return itemFormat;
     }
 
-    public void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
-        String nowDate = getDate();
+    public boolean isPromotionDate(List<Item> items) {
+        return store.isPromotionDate(items, getDate());
     }
 
-    private String getDate() {
+    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity) {
+        return store.getRequestedQuantity(items, quantity);
+    }
+
+    private LocalDate getDate() {
         LocalDateTime currentDate = DateTimes.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
-        return currentDate.format(formatter);
+        return currentDate.toLocalDate();
     }
 
     private Map<List<Item>, Integer> splitHyphen(final String replacedItem) {

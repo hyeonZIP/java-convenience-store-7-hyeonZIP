@@ -1,12 +1,13 @@
 package store.model;
 
+import java.util.EnumMap;
 import java.util.List;
 
 public class Item {
     private final String name;
     private final int price;
-    private final int quantity;
     private final String promotion;
+    private int quantity;
 
     public Item(List<String> items) {
         this.name = items.get(0);
@@ -29,5 +30,27 @@ public class Item {
 
     public String getPromotion() {
         return promotion;
+    }
+
+    public EnumMap<PromotionResult, String> deductPromotionItem(int requestQuantity, int buy, int get) {
+        EnumMap<PromotionResult, String> result = new EnumMap<>(PromotionResult.class);
+        result.put(PromotionResult.ITEM_NAME, name);
+        result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(quantity / (buy + get) * (buy + get) - requestQuantity));
+        int calculatePromotionNumber = Math.max(quantity, requestQuantity);
+        result.put(PromotionResult.DISCOUNT_COUNT, String.valueOf(calculatePromotionNumber / (buy + get)));
+        int nonDiscountCount = calculatePromotionNumber % (buy + get);//할인 못받는 갯수
+        result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(nonDiscountCount));
+        if (nonDiscountCount == buy) {
+            result.put(PromotionResult.FREE_ITEM, "1");
+        }
+        return result;
+    }
+
+    public enum PromotionResult {
+        ITEM_NAME,
+        INSUFFICIENT_INVENTORY,
+        DISCOUNT_COUNT,
+        NON_DISCOUNT_COUNT,
+        FREE_ITEM
     }
 }

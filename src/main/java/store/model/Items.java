@@ -18,7 +18,7 @@ public class Items {
         return items;
     }
 
-    public List<Item> checkNameAndQuantity(String name, int quantity) {
+    public List<Item> checkNameAndQuantity(final String name, final int quantity) {
         List<Item> foundItems = new ArrayList<>();
         for (Item item : items) {
             equalsName(item, foundItems, name);

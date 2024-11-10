@@ -10,7 +10,7 @@ public class Promotion {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public Promotion(List<String> promotion) {
+    public Promotion(final List<String> promotion) {
         this.name = promotion.get(0);
         this.buy = Integer.parseInt(promotion.get(1));
         this.get = Integer.parseInt(promotion.get(2));

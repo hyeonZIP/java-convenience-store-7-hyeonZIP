@@ -5,7 +5,7 @@ import store.model.Item;
 import store.model.Items;
 import store.model.Promotion;
 import store.model.Promotions;
-import store.model.SelectItem;
+import store.model.ReceiptItem;
 import store.model.Store;
 import store.validator.StoreValidator;
 
@@ -127,7 +127,7 @@ public class StoreService {
         return store.getReceipt();
     }
 
-    public List<SelectItem> getSelectList() {
+    public List<ReceiptItem> getSelectList() {
         return store.getSelectedItem();
     }
 

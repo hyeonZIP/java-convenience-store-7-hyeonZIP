@@ -58,7 +58,7 @@ public class InputView {
         }
     }
 
-    private void validateYesOrNo(String input) {
+    private void validateYesOrNo(final String input) {
         if (!input.matches(YES_NO_REGEX)) {
             throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
         }

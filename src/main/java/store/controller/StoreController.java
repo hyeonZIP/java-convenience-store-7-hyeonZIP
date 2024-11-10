@@ -1,7 +1,7 @@
 package store.controller;
 
 import store.model.Item;
-import store.model.SelectItem;
+import store.model.ReceiptItem;
 import store.model.Store;
 import store.service.StoreService;
 import store.view.InputView;
@@ -59,8 +59,8 @@ public class StoreController {
 
     private void displayReceipt() {
         EnumMap<Store.Receipt, Integer> receipt = storeService.getReceipt();
-        List<SelectItem> selectItem = storeService.getSelectList();
-        outputView.printResult(receipt, selectItem);
+        List<ReceiptItem> receiptItem = storeService.getSelectList();
+        outputView.printResult(receipt, receiptItem);
         storeService.resetSelectList();
     }
 
@@ -75,12 +75,12 @@ public class StoreController {
         }
     }
 
-    private void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
+    private void saleItem(final Map<List<Item>, Integer> inventoryAndQuantity) {
         processQuantity(inventoryAndQuantity);
         handleMembership();
     }
 
-    private void processQuantity(Map<List<Item>, Integer> inventoryAndQuantity) {
+    private void processQuantity(final Map<List<Item>, Integer> inventoryAndQuantity) {
         for (Map.Entry<List<Item>, Integer> entry : inventoryAndQuantity.entrySet()) {
             boolean promotionDate = storeService.isPromotionDate(entry.getKey());
             EnumMap<Item.PromotionResult, String> promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue(), promotionDate);
@@ -88,7 +88,7 @@ public class StoreController {
         }
     }
 
-    private void handlePromotion(boolean promotionDate, EnumMap<Item.PromotionResult, String> promotionResult) {
+    private void handlePromotion(final boolean promotionDate, final EnumMap<Item.PromotionResult, String> promotionResult) {
         if (promotionDate) {
             askCustomerChoice(promotionResult);
             return;
@@ -104,7 +104,7 @@ public class StoreController {
         }
     }
 
-    private void askCustomerChoice(EnumMap<Item.PromotionResult, String> promotionResult) {
+    private void askCustomerChoice(final EnumMap<Item.PromotionResult, String> promotionResult) {
         try {
             if (storeService.checkPromotionState(promotionResult)) {
                 handleOutOfPromotion(promotionResult);
@@ -118,7 +118,7 @@ public class StoreController {
         }
     }
 
-    private void handleOutOfPromotion(EnumMap<Item.PromotionResult, String> promotionResult) {
+    private void handleOutOfPromotion(final EnumMap<Item.PromotionResult, String> promotionResult) {
         outputView.outOfPromotion(promotionResult.get(Item.PromotionResult.ITEM_NAME),
                 Math.abs(Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT))));
         String yesOrNo = inputView.askBuyingNoDiscountItem();
@@ -127,7 +127,7 @@ public class StoreController {
         }
     }
 
-    private void handleFreeItem(EnumMap<Item.PromotionResult, String> promotionResult) {
+    private void handleFreeItem(final EnumMap<Item.PromotionResult, String> promotionResult) {
         outputView.freeItem(promotionResult.get(Item.PromotionResult.ITEM_NAME));
         String yesOrNo = inputView.askGetFreeItem();
         if (yesOrNo.equals("Y")) {
@@ -136,7 +136,7 @@ public class StoreController {
         storeService.makeReceiptBeforeMembership(promotionResult);
     }
 
-    private void updatePromotionResult(EnumMap<Item.PromotionResult, String> promotionResult) {
+    private void updatePromotionResult(final EnumMap<Item.PromotionResult, String> promotionResult) {
         int requestQuantity = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY)) + 1;
         promotionResult.put(Item.PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
         int discountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT)) + 1;

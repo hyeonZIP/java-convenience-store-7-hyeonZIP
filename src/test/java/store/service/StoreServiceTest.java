@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
-import store.model.SelectItems;
+import store.model.ReceiptItems;
 import store.model.Store;
 import store.validator.StoreValidator;
 
@@ -22,14 +22,14 @@ class StoreServiceTest {
     private Store store;
     private StoreService storeService;
     private StoreValidator storeValidator;
-    private SelectItems selectItems;
+    private ReceiptItems receiptItems;
 
     @BeforeEach
     void setUp() {
         items = new Items();
         promotions = new Promotions();
-        selectItems = new SelectItems();
-        store = new Store(items, promotions, selectItems);
+        receiptItems = new ReceiptItems();
+        store = new Store(items, promotions, receiptItems);
         storeValidator = new StoreValidator();
         storeService = new StoreService(promotions, items, store, storeValidator);
     }

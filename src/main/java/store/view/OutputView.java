@@ -1,7 +1,7 @@
 package store.view;
 
 import store.model.Item;
-import store.model.SelectItem;
+import store.model.ReceiptItem;
 import store.model.Store;
 
 import java.text.DecimalFormat;
@@ -28,33 +28,33 @@ public class OutputView {
     private static final String ASK_ADDITIONAL_BUY = "\n감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
     private static final String HYPHEN = "-";
 
-    public void outOfPromotion(String itemName, int nonDiscountCount) {
+    public void outOfPromotion(final String itemName, final int nonDiscountCount) {
         System.out.println(LINE_SEPARATOR + String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
     }
 
-    public void freeItem(String itemName) {
+    public void freeItem(final String itemName) {
         System.out.println(LINE_SEPARATOR + String.format(FREE_ITEM, itemName));
     }
 
-    public void welcomeMessageAndInventory(List<Item> inventory) {
+    public void welcomeMessageAndInventory(final List<Item> inventory) {
         printWelcomeMessage();
         printInventory(inventory);
     }
 
-    public void printResult(EnumMap<Store.Receipt, Integer> result, List<SelectItem> selectList) {
+    public void printResult(final EnumMap<Store.Receipt, Integer> result, final List<ReceiptItem> selectList) {
         System.out.println(RECEIPT_HEADER);
         System.out.println(ITEM_HEADER);
-        for (SelectItem selectItem : selectList) {
-            int price = selectItem.getPrice() * selectItem.getQuantity();
+        for (ReceiptItem receiptItem : selectList) {
+            int price = receiptItem.getPrice() * receiptItem.getQuantity();
             System.out.println(String.format("%-12s %-12s %-12s",
-                    selectItem.getName(),
-                    selectItem.getQuantity(),
+                    receiptItem.getName(),
+                    receiptItem.getQuantity(),
                     PRICE_FORMAT.format(price)));
         }
         System.out.println(PROMOTION);
-        for (SelectItem selectItem : selectList) {
-            if (selectItem.getPromotion() != 0) {
-                System.out.println(String.format("%-10s %-10s", selectItem.getName(), selectItem.getPromotion()));
+        for (ReceiptItem receiptItem : selectList) {
+            if (receiptItem.getPromotion() != 0) {
+                System.out.println(String.format("%-10s %-10s", receiptItem.getName(), receiptItem.getPromotion()));
             }
         }
         System.out.println(SEPARATOR);
@@ -76,7 +76,7 @@ public class OutputView {
         System.out.println(WELCOME_MESSAGE + LINE_SEPARATOR);
     }
 
-    private void printInventory(List<Item> inventory) {
+    private void printInventory(final List<Item> inventory) {
         StringBuilder wholeInventory = new StringBuilder();
         for (Item item : inventory) {
             wholeInventory.append(formatInventory(item)).append(LINE_SEPARATOR);
@@ -85,7 +85,7 @@ public class OutputView {
         System.out.println(wholeInventory);
     }
 
-    private String formatInventory(Item item) {
+    private String formatInventory(final Item item) {
         String quantity = formatQuantity(item.getQuantity());
         String promotion = formatPromotion(item.getPromotion());
         return String.format("- %s %s원 %s %s",
@@ -95,14 +95,14 @@ public class OutputView {
                 promotion);
     }
 
-    private String formatQuantity(int quantity) {
+    private String formatQuantity(final int quantity) {
         if (quantity == 0) {
             return "재고 없음";
         }
         return quantity + "개";
     }
 
-    private String formatPromotion(String promotion) {
+    private String formatPromotion(final String promotion) {
         if (promotion.equals("null")) {
             return "";
         }

@@ -12,7 +12,7 @@ public class StoreValidator {
     private static final String REGEX = "^\\[([가-힣a-zA-Z0-9]+)-([0-9]+)\\](,\\[([가-힣a-zA-Z0-9]+)-([0-9]+)\\])*$";
     private static final String HYPHEN = "-";
 
-    public void validateFormat(String input) {
+    public void validateFormat(final String input) {
         Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(input);
         if (!matcher.matches()) {
@@ -20,7 +20,7 @@ public class StoreValidator {
         }
     }
 
-    public void validateDuplicate(List<String> items) {
+    public void validateDuplicate(final List<String> items) {
         Set<String> dupleCheckItem = new HashSet<>();
         for (String item : items) {
             String name = item.split(HYPHEN)[0];

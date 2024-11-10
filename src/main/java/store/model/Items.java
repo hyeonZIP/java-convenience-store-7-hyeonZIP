@@ -32,9 +32,17 @@ public class Items {
         Item promotionItem = getPromotionItem(name);
         Item normalItem = getNormalItem(name);
 
-        if (promotionItem.getQuantity() < quantity) {
+        if (promotionItem != null && promotionItem.getQuantity() < quantity) {
             normalItem.updateQuantity(quantity - promotionItem.getQuantity());
             promotionItem.updateQuantity(promotionItem.getQuantity());
+            return;
+        }
+        if (promotionItem != null && promotionItem.getQuantity() >= quantity) {
+            promotionItem.updateQuantity(promotionItem.getQuantity() - quantity);
+            return;
+        }
+        if (normalItem.getQuantity() >= quantity) {
+            normalItem.updateQuantity(normalItem.getQuantity() - quantity);
         }
     }
 

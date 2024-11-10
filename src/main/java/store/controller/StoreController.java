@@ -69,7 +69,7 @@ public class StoreController {
     private void saleItem(Map<List<Item>, Integer> inventoryAndQuantity) {
         for (Map.Entry<List<Item>, Integer> entry : inventoryAndQuantity.entrySet()) {
             boolean promotionDate = storeService.isPromotionDate(entry.getKey());
-            EnumMap<Item.PromotionResult, String> promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());
+            EnumMap<Item.PromotionResult, String> promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue(), promotionDate);
             if (promotionDate) {
                 askCustomerChoice(promotionResult);
             }

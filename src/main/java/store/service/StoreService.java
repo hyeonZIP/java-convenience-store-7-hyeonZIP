@@ -91,8 +91,8 @@ public class StoreService {
         store.resetSelectList();
     }
 
-    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity) {
-        return store.getRequestedQuantity(items, quantity);
+    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity, Boolean promotionDate) {
+        return store.getRequestedQuantity(items, quantity, promotionDate);
     }
 
     public boolean checkPromotionState(EnumMap<Item.PromotionResult, String> promotionResult) {

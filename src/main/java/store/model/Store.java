@@ -26,10 +26,10 @@ public class Store {
         return false;
     }
 
-    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity) {
+    public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity, Boolean promotionDate) {
         Item promotionItem = getPromotionItem(items);
         Item normalItem = getNormalItem(items);
-        if (promotionItem != null) {
+        if (promotionItem != null && promotionDate) {
             Promotion promotion = getPromotion(promotionItem);
             int buy = promotion.getBuy();
             int get = promotion.getGet();

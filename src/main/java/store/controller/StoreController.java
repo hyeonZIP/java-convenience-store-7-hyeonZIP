@@ -70,11 +70,16 @@ public class StoreController {
     private void askCustomerChoice(EnumMap<Item.PromotionResult, String> promotionResult) {
         try {
             int nonDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.INSUFFICIENT_INVENTORY));
+            String itemName = promotionResult.get(Item.PromotionResult.ITEM_NAME);
             if (nonDiscountCount < 0) {
-                String itemName = promotionResult.get(Item.PromotionResult.ITEM_NAME);
                 outputView.outOfPromotion(itemName, Math.abs(nonDiscountCount));
                 String YesOrNo = inputView.askBuyingNoDiscountItem();
             }
+            if (promotionResult.get(Item.PromotionResult.FREE_ITEM) != null) {
+                outputView.freeItem(itemName);
+                String YesOrNo = inputView.askGetFreeItem();
+            }
+
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }

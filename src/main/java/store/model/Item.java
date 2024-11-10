@@ -35,14 +35,16 @@ public class Item {
     public EnumMap<PromotionResult, String> deductPromotionItem(int requestQuantity, int buy, int get) {
         EnumMap<PromotionResult, String> result = new EnumMap<>(PromotionResult.class);
         result.put(PromotionResult.ITEM_NAME, name);
-        result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(quantity / (buy + get) * (buy + get) - requestQuantity));
-        int calculatePromotionNumber = Math.max(quantity, requestQuantity);
+        int remainQuantity = quantity / (buy + get) * (buy + get) - requestQuantity;
+        result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(remainQuantity));
+        int calculatePromotionNumber = Math.min(quantity, requestQuantity);
         result.put(PromotionResult.DISCOUNT_COUNT, String.valueOf(calculatePromotionNumber / (buy + get)));
         int nonDiscountCount = calculatePromotionNumber % (buy + get);//할인 못받는 갯수
         result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(nonDiscountCount));
         if (nonDiscountCount == buy) {
             result.put(PromotionResult.FREE_ITEM, "1");
         }
+        result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
         return result;
     }
 
@@ -51,6 +53,7 @@ public class Item {
         INSUFFICIENT_INVENTORY,
         DISCOUNT_COUNT,
         NON_DISCOUNT_COUNT,
-        FREE_ITEM
+        FREE_ITEM,
+        REQUEST_QUANTITY
     }
 }

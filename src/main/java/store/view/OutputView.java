@@ -12,9 +12,14 @@ public class OutputView {
     private static final String ASK_BUYING_ITEM = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat(DECIMAL_FORMAT);
     private static final String OUT_OF_STOCK_PROMOTION = "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)";
+    private static final String FREE_ITEM = "현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니가? (Y/N)";
 
     public void outOfPromotion(String itemName, int nonDiscountCount) {
         System.out.println(String.format(OUT_OF_STOCK_PROMOTION, itemName, nonDiscountCount));
+    }
+
+    public void freeItem(String itemName) {
+        System.out.println(String.format(FREE_ITEM, itemName));
     }
 
     public void welcomeMessageAndInventory(List<Item> inventory) {

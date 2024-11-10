@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
+import store.model.Store;
 import store.validator.StoreValidator;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StoreServiceTest {
     private Items items;
     private Promotions promotions;
+    private Store store;
     private StoreService storeService;
     private StoreValidator storeValidator;
 
@@ -24,8 +26,9 @@ class StoreServiceTest {
     void setUp() {
         items = new Items();
         promotions = new Promotions();
+        store = new Store(items, promotions);
         storeValidator = new StoreValidator();
-        storeService = new StoreService(promotions, items, storeValidator);
+        storeService = new StoreService(promotions, items, store, storeValidator);
     }
 
     @Test

@@ -26,7 +26,6 @@ public class StoreService {
     private static final String HYPHEN = "-";
     private static final String LEFT_BRAKET = "[";
     private static final String RIGHT_BRAKET = "]";
-    private static final String DATE_FORMATTER = "yyyy-MM-dd";
     private final Items items;
     private final Promotions promotions;
     private final Store store;
@@ -89,6 +88,19 @@ public class StoreService {
 
     public EnumMap<Item.PromotionResult, String> getRequestedQuantity(List<Item> items, int quantity) {
         return store.getRequestedQuantity(items, quantity);
+    }
+
+    public boolean checkPromotionState(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int nonDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.INSUFFICIENT_INVENTORY));
+        return nonDiscountCount < 0;
+    }
+
+    public boolean checkGettingFreeItem(EnumMap<Item.PromotionResult, String> promotionResult) {
+        return promotionResult.get(Item.PromotionResult.FREE_ITEM) != null;
+    }
+
+    public void makeReceiptBeforeMembership(EnumMap<Item.PromotionResult, String> promotionResult) {
+        store.updateReceipt(promotionResult);
     }
 
     private LocalDate getDate() {

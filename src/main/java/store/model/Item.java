@@ -45,11 +45,13 @@ public class Item {
             result.put(PromotionResult.FREE_ITEM, "1");
         }
         result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
+        result.put(PromotionResult.ITEM_PRICE, String.valueOf(price));
         return result;
     }
 
     public enum PromotionResult {
         ITEM_NAME,
+        ITEM_PRICE,
         INSUFFICIENT_INVENTORY,
         DISCOUNT_COUNT,
         NON_DISCOUNT_COUNT,

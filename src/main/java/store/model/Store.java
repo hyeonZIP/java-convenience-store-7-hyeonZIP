@@ -7,6 +7,7 @@ import java.util.List;
 public class Store {
     private final Items items;
     private final Promotions promotions;
+    private EnumMap<Receipt, Integer> receipt = new EnumMap<>(Receipt.class);
     private int membership;
 
     public Store(Items items, Promotions promotions) {
@@ -34,6 +35,22 @@ public class Store {
         return null;
     }
 
+    public void updateReceipt(EnumMap<Item.PromotionResult, String> promotionResult) {
+        int addTotalCItemCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY));
+        receipt.put(Receipt.TOTAL_ITEM_COUNT, receipt.getOrDefault(Receipt.TOTAL_ITEM_COUNT, 0) + addTotalCItemCount);
+
+        int itemPrice = Integer.parseInt(promotionResult.get(Item.PromotionResult.ITEM_PRICE));
+        int itemQuantity = Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY));
+        receipt.put(Receipt.TOTAL_PRICE, receipt.getOrDefault(Receipt.TOTAL_PRICE, 0) + itemPrice * itemQuantity);
+
+        int itemDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT));
+        receipt.put(Receipt.PROMOTION_DISCOUNT, receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0) + itemPrice * itemDiscountCount);
+
+        int totalPrice = receipt.getOrDefault(Receipt.TOTAL_PRICE, 0);
+        int promotionDiscount = receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0);
+        receipt.put(Receipt.PAID_MONEY, totalPrice - promotionDiscount);
+        //멤버십 할인은 프로모션 할인 적용 후의 금액에 할인
+    }
 
     private Item getPromotionItem(List<Item> items) {
         for (Item item : items) {
@@ -46,6 +63,14 @@ public class Store {
 
     private Promotion getPromotion(Item promotionItem) {
         return promotions.getPromotion(promotionItem.getPromotion());
+    }
+
+    enum Receipt {
+        TOTAL_PRICE,
+        TOTAL_ITEM_COUNT,
+        PROMOTION_DISCOUNT,
+        MEMBERSHIP_DISCOUNT,
+        PAID_MONEY
     }
 
 }

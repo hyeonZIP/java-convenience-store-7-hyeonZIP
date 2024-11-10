@@ -61,25 +61,33 @@ public class StoreController {
             boolean promotionDate = storeService.isPromotionDate(entry.getKey());//프로모션 기간일 경우 true/기간이 아니거나 프로모션이 존재하지 않을 경우 false
             EnumMap<Item.PromotionResult, String> promotionResult;//프로모션 재고에서 요구수량을 뺸 값
             if (promotionDate) {
-                promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());//해당하는 프로모션 만큼 요구 수량을 차감하고 난 정수 반환
+                promotionResult = storeService.getRequestedQuantity(entry.getKey(), entry.getValue());
                 askCustomerChoice(promotionResult);
             }
+
         }
     }
 
     private void askCustomerChoice(EnumMap<Item.PromotionResult, String> promotionResult) {
         try {
-            int nonDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.INSUFFICIENT_INVENTORY));
-            String itemName = promotionResult.get(Item.PromotionResult.ITEM_NAME);
-            if (nonDiscountCount < 0) {
-                outputView.outOfPromotion(itemName, Math.abs(nonDiscountCount));
+            if (storeService.checkPromotionState(promotionResult)) {
+                outputView.outOfPromotion(promotionResult.get(Item.PromotionResult.ITEM_NAME), Math.abs(Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT))));
                 String YesOrNo = inputView.askBuyingNoDiscountItem();
+                if (YesOrNo.equals("N")) {
+                    return;
+                }
+                storeService.makeReceiptBeforeMembership(promotionResult);
+                return;
             }
-            if (promotionResult.get(Item.PromotionResult.FREE_ITEM) != null) {
-                outputView.freeItem(itemName);
+            if (storeService.checkGettingFreeItem(promotionResult)) {
+                outputView.freeItem(promotionResult.get(Item.PromotionResult.ITEM_NAME));
                 String YesOrNo = inputView.askGetFreeItem();
+                if (YesOrNo.equals("Y")) {
+                    promotionResult.put(Item.PromotionResult.REQUEST_QUANTITY, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.REQUEST_QUANTITY)) + 1));
+                    promotionResult.put(Item.PromotionResult.DISCOUNT_COUNT, String.valueOf(Integer.parseInt(promotionResult.get(Item.PromotionResult.DISCOUNT_COUNT) + 1)));
+                }
+                storeService.makeReceiptBeforeMembership(promotionResult);
             }
-
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }

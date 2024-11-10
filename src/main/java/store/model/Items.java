@@ -31,20 +31,30 @@ public class Items {
     public void updateInventory(final String name, final int quantity) {
         Item promotionItem = getPromotionItem(name);
         Item normalItem = getNormalItem(name);
+        if (promotionItem != null) {
+            updatePromotionItemInventoryFirst(promotionItem, normalItem, quantity);
+        }
+        if (normalItem != null) {
+            updateNormalItemInventoryFirst(promotionItem, normalItem, quantity);
+        }
+    }
 
-        if (promotionItem != null && promotionItem.getQuantity() < quantity) {
+    private void updatePromotionItemInventoryFirst(Item promotionItem, Item normalItem, int quantity) {
+        if (promotionItem.getQuantity() < quantity) {
             normalItem.updateQuantity(quantity - promotionItem.getQuantity());
             promotionItem.updateQuantity(promotionItem.getQuantity());
             return;
         }
-        if (promotionItem != null && promotionItem.getQuantity() >= quantity) {
-            promotionItem.updateQuantity(quantity);
+        promotionItem.updateQuantity(quantity);
+    }
+
+    private void updateNormalItemInventoryFirst(Item promotionItem, Item normalItem, int quantity) {
+        if (normalItem.getQuantity() < quantity) {
+            promotionItem.updateQuantity(quantity - normalItem.getQuantity());
+            normalItem.updateQuantity(normalItem.getQuantity());
             return;
         }
-        if (normalItem.getQuantity() >= quantity) {
-            normalItem.updateQuantity(quantity);
-
-        }
+        normalItem.updateQuantity(quantity);
     }
 
     private Item getPromotionItem(String name) {

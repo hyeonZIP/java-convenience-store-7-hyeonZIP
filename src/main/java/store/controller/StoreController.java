@@ -47,7 +47,10 @@ public class StoreController {
             List<SelectItem> selectItem = storeService.getSelectList();
             outputView.printResult(receipt, selectItem);
             outputView.askAdditionalBuy();
-            break;//구매 종료 분기 코드 작성 이전까지 임시 사용
+            String yesOrNo = inputView.askAdditionalBuy();
+            if (yesOrNo.equals("N")) {
+                break;
+            }
         }
     }
 

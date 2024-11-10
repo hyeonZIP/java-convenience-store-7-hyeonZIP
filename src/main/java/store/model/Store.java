@@ -54,10 +54,13 @@ public class Store {
         receipt.put(Receipt.PAID_MONEY, totalPrice - promotionDiscount);
 
         String itemName = promotionResult.getOrDefault(Item.PromotionResult.ITEM_NAME, "");
-        int quantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, ""));
-        int price = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, ""));
-        int promotion = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, ""));
+        int quantity = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.REQUEST_QUANTITY, "0"));
+        int price = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.ITEM_PRICE, "0"));
+        int promotion = Integer.parseInt(promotionResult.getOrDefault(Item.PromotionResult.DISCOUNT_COUNT, "0"));
         selectItems.add(new SelectItem(itemName, quantity, price, promotion));
+        if (promotionResult.get(Item.PromotionResult.IS_PROMOTION).equals("N")) {
+            receipt.put(Receipt.NON_PROMOTION_PRICE, receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0) + price * quantity);
+        }
     }
 
     public void updateInventory(EnumMap<Item.PromotionResult, String> promotionResult) {
@@ -67,10 +70,11 @@ public class Store {
     }
 
     public void applyMembership() {
-        int paidMoney = receipt.getOrDefault(Receipt.PAID_MONEY, 0);
-        int membershipDiscount = paidMoney * 30 / 100;
+        int nonPromotionPrice = receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0);
+        int membershipDiscount = nonPromotionPrice * 30 / 100;
+        int paidMoney = receipt.getOrDefault(Receipt.TOTAL_PRICE, 0) - (membershipDiscount + receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0));
         receipt.put(Receipt.MEMBERSHIP_DISCOUNT, membershipDiscount);
-        receipt.put(Receipt.PAID_MONEY, paidMoney - membershipDiscount);
+        receipt.put(Receipt.PAID_MONEY, paidMoney);
     }
 
     public EnumMap<Receipt, Integer> getReceipt() {
@@ -108,7 +112,8 @@ public class Store {
         TOTAL_ITEM_COUNT,
         PROMOTION_DISCOUNT,
         MEMBERSHIP_DISCOUNT,
-        PAID_MONEY
+        PAID_MONEY,
+        NON_PROMOTION_PRICE
     }
 
 }

@@ -38,6 +38,7 @@ public class Item {
     }
 
     public EnumMap<PromotionResult, String> deductPromotionItem(int requestQuantity, int buy, int get) {
+        result.put(PromotionResult.IS_PROMOTION, "Y");
         result.put(PromotionResult.ITEM_NAME, name);
         int remainQuantity = quantity / (buy + get) * (buy + get) - requestQuantity;
         result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(remainQuantity));
@@ -57,7 +58,7 @@ public class Item {
         result.put(PromotionResult.ITEM_NAME, name);
         result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
         result.put(PromotionResult.ITEM_PRICE, String.valueOf(price));
-        System.out.println(result);
+        result.put(PromotionResult.IS_PROMOTION, "N");
         return result;
     }
 
@@ -68,6 +69,7 @@ public class Item {
         DISCOUNT_COUNT,
         NON_DISCOUNT_COUNT,
         FREE_ITEM,
-        REQUEST_QUANTITY
+        REQUEST_QUANTITY,
+        IS_PROMOTION
     }
 }

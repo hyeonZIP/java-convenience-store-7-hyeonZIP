@@ -16,8 +16,8 @@ public class OutputView {
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat(DECIMAL_FORMAT);
     private static final String OUT_OF_STOCK_PROMOTION = "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)";
     private static final String FREE_ITEM = "현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니가? (Y/N)";
-    private static final String ASK_MEMBER_SHIP = "멤버십 할인을 받으시겠습니까? (Y/N)";
-    private static final String RECEIPT_HEADER = "==============W 편의점================";
+    private static final String ASK_MEMBER_SHIP = "\n멤버십 할인을 받으시겠습니까? (Y/N)";
+    private static final String RECEIPT_HEADER = "\n==============W 편의점================";
     private static final String ITEM_HEADER = "상품명\t\t수량\t\t금액";
     private static final String PROMOTION = "=============증\t정===============";
     private static final String SEPARATOR = "====================================";
@@ -25,7 +25,7 @@ public class OutputView {
     private static final String PROMOTION_DISCOUNT = "행사할인\t\t\t";
     private static final String MEMBERSHIP_DISCOUNT = "멤버십할인\t\t\t";
     private static final String PAID_MONEY = "내실돈\t\t\t ";
-    private static final String ASK_ADDITIONAL_BUY = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
+    private static final String ASK_ADDITIONAL_BUY = "\n감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
 
 
     public void outOfPromotion(String itemName, int nonDiscountCount) {

@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -60,10 +61,19 @@ public class StoreService {
     }
 
     public void saveInventory(final BufferedReader inventory) throws IOException {
-        String line;
-        while ((line = inventory.readLine()) != null) {
+        String line = inventory.readLine();
+        while (line != null) {
+            String nextLine = inventory.readLine();
+            List<String> nextItem = new ArrayList<>();
+            if (nextLine != null) {
+                nextItem = List.of(nextLine.split(COMMA));
+            }
             List<String> item = List.of(line.split(COMMA));
             items.add(new Item(item));
+            if (!item.get(3).equals("null") && !item.get(0).equals(nextItem.get(0))) {
+                items.add(new Item(List.of(item.get(0), item.get(1), "0", "null")));
+            }
+            line = nextLine;
         }
     }
 

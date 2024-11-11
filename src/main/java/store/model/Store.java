@@ -142,6 +142,14 @@ public class Store {
         }
     }
 
+    public Promotions getPromotions() {
+        return promotions;
+    }
+
+    public Items getItems() {
+        return items;
+    }
+
     public enum Receipt {
         TOTAL_PRICE,
         TOTAL_ITEM_COUNT,

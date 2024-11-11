@@ -11,17 +11,26 @@ import store.view.InputView;
 import store.view.OutputView;
 
 public class Application {
+
     public static void main(String[] args) {
-        OutputView outputView = new OutputView();
-        InputView inputView = new InputView();
-        Promotions promotions = new Promotions();
-        Items items = new Items();
-        ReceiptItems receiptItems = new ReceiptItems();
-        Store store = new Store(items, promotions, receiptItems);
-        StoreValidator storeValidator = new StoreValidator();
-        StoreService storeService = new StoreService(promotions, items, store, storeValidator);
-        StoreController storeController = new StoreController(outputView, inputView, storeService);
+        StoreController storeController = createStoreController();
         storeController.beforeRun();
         storeController.run();
+    }
+
+    private static StoreController createStoreController() {
+        OutputView outputView = new OutputView();
+        InputView inputView = new InputView();
+        Store store = createStore();
+        StoreValidator storeValidator = new StoreValidator();
+        StoreService storeService = new StoreService(store.getPromotions(), store.getItems(), store, storeValidator);
+        return new StoreController(outputView, inputView, storeService);
+    }
+
+    private static Store createStore() {
+        Items items = new Items();
+        Promotions promotions = new Promotions();
+        ReceiptItems receiptItems = new ReceiptItems();
+        return new Store(items, promotions, receiptItems);
     }
 }

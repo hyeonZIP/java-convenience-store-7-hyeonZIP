@@ -3,6 +3,8 @@ package store.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StoreServiceTest {
     private Items items;
@@ -71,6 +74,13 @@ class StoreServiceTest {
             assertThat(items.getFirst().getPromotion()).isEqualTo("탄산2+1");
             assertThat(items.getLast().getPromotion()).isEqualTo("null");
         }
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"'[사이다-30],[콜라-30]'", "'[칠성사이다-3]'", "'[사이다-0]]'", "'[콜라--2]'"})
+    @DisplayName("상품 찾기 예외 테스트")
+    void findItemException(String input) {
+        assertThatThrownBy(() -> storeService.findItem(input)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private void assertThatAnySatisfy(List<Item> savedItems, List<String> expected) {

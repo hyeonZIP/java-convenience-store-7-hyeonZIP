@@ -33,6 +33,7 @@ public class Items {
         Item normalItem = getNormalItem(name);
         if (promotionItem != null) {
             updatePromotionItemInventoryFirst(promotionItem, normalItem, quantity);
+            return;
         }
         if (normalItem != null) {
             updateNormalItemInventoryFirst(promotionItem, normalItem, quantity);

@@ -41,27 +41,12 @@ public class OutputView {
         printInventory(inventory);
     }
 
-    public void printResult(final EnumMap<Store.Receipt, Integer> result, final List<ReceiptItem> selectList) {
+    public void printResult(final EnumMap<Store.Receipt, Integer> result, final List<ReceiptItem> receiptItems) {
         System.out.println(RECEIPT_HEADER);
-        System.out.println(ITEM_HEADER);
-        for (ReceiptItem receiptItem : selectList) {
-            int price = receiptItem.getPrice() * receiptItem.getQuantity();
-            System.out.println(String.format("%-12s %-12s %-12s",
-                    receiptItem.getName(),
-                    receiptItem.getQuantity(),
-                    PRICE_FORMAT.format(price)));
-        }
-        System.out.println(PROMOTION);
-        for (ReceiptItem receiptItem : selectList) {
-            if (receiptItem.getPromotion() != 0) {
-                System.out.println(String.format("%-10s %-10s", receiptItem.getName(), receiptItem.getPromotion()));
-            }
-        }
-        System.out.println(SEPARATOR);
-        System.out.println(String.format("%-10s %-10s %-10s", TOTAL_PRICE, result.get(Store.Receipt.TOTAL_ITEM_COUNT), PRICE_FORMAT.format(result.get(Store.Receipt.TOTAL_PRICE))));
-        System.out.println(String.format("%-20s %-10s", PROMOTION_DISCOUNT, HYPHEN + PRICE_FORMAT.format(result.get(Store.Receipt.PROMOTION_DISCOUNT))));
-        System.out.println(String.format("%-20s %-10s", MEMBERSHIP_DISCOUNT, HYPHEN + PRICE_FORMAT.format(result.getOrDefault(Store.Receipt.MEMBERSHIP_DISCOUNT, 0))));
-        System.out.println(String.format("%-20s %-10s", PAID_MONEY, PRICE_FORMAT.format(result.get(Store.Receipt.PAID_MONEY))));
+        printReceiptHeader(receiptItems);
+        printReceiptBody(receiptItems);
+        printReceiptFooter(result);
+
     }
 
     public void askAdditionalBuy() {
@@ -70,6 +55,34 @@ public class OutputView {
 
     public void askMembership() {
         System.out.println(ASK_MEMBER_SHIP);
+    }
+
+    private void printReceiptFooter(final EnumMap<Store.Receipt, Integer> result) {
+        System.out.println(SEPARATOR);
+        System.out.println(String.format("%-10s %-10s %-10s", TOTAL_PRICE, result.get(Store.Receipt.TOTAL_ITEM_COUNT), PRICE_FORMAT.format(result.get(Store.Receipt.TOTAL_PRICE))));
+        System.out.println(String.format("%-20s %-10s", PROMOTION_DISCOUNT, HYPHEN + PRICE_FORMAT.format(result.get(Store.Receipt.PROMOTION_DISCOUNT))));
+        System.out.println(String.format("%-20s %-10s", MEMBERSHIP_DISCOUNT, HYPHEN + PRICE_FORMAT.format(result.getOrDefault(Store.Receipt.MEMBERSHIP_DISCOUNT, 0))));
+        System.out.println(String.format("%-20s %-10s", PAID_MONEY, PRICE_FORMAT.format(result.get(Store.Receipt.PAID_MONEY))));
+    }
+
+    private void printReceiptBody(final List<ReceiptItem> receiptItems) {
+        System.out.println(PROMOTION);
+        for (ReceiptItem receiptItem : receiptItems) {
+            if (receiptItem.getPromotion() != 0) {
+                System.out.println(String.format("%-10s %-10s", receiptItem.getName(), receiptItem.getPromotion()));
+            }
+        }
+    }
+
+    private void printReceiptHeader(final List<ReceiptItem> receiptItems) {
+        System.out.println(ITEM_HEADER);
+        for (ReceiptItem receiptItem : receiptItems) {
+            int price = receiptItem.getPrice() * receiptItem.getQuantity();
+            System.out.println(String.format("%-12s %-12s %-12s",
+                    receiptItem.getName(),
+                    receiptItem.getQuantity(),
+                    PRICE_FORMAT.format(price)));
+        }
     }
 
     private void printWelcomeMessage() {

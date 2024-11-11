@@ -56,19 +56,20 @@ class StoreServiceTest {
         for (List<String> expect : expected) {
             assertThatAnySatisfy(savedItems, expect);
         }
-
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("상품 찾기 테스트")
     void findItem() {
         String input = "[사이다-5],[콜라-6]";
 
         Map<List<Item>, Integer> result = storeService.findItem(input);
 
+        assertThat(result).hasSize(2);
         for (Map.Entry<List<Item>, Integer> entry : result.entrySet()) {
-            System.out.println(entry.getKey());
-            System.out.println(entry.getValue());
+            List<Item> items = entry.getKey();
+            assertThat(items.getFirst().getPromotion()).isEqualTo("탄산2+1");
+            assertThat(items.getLast().getPromotion()).isEqualTo("null");
         }
     }
 

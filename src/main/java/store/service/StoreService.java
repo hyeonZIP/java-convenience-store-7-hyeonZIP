@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -64,10 +64,7 @@ public class StoreService {
         String line = inventory.readLine();
         while (line != null) {
             String nextLine = inventory.readLine();
-            List<String> nextItem = new ArrayList<>();
-            if (nextLine != null) {
-                nextItem = List.of(nextLine.split(COMMA));
-            }
+            List<String> nextItem = getNextItem(nextLine);
             List<String> item = List.of(line.split(COMMA));
             items.add(new Item(item));
             if (!item.get(3).equals("null") && !item.get(0).equals(nextItem.get(0))) {
@@ -129,6 +126,13 @@ public class StoreService {
 
     public List<ReceiptItem> getSelectList() {
         return store.getSelectedItem();
+    }
+
+    private List<String> getNextItem(String nextLine) {
+        if (nextLine != null) {
+            return List.of(nextLine.split(COMMA));
+        }
+        return Collections.emptyList();
     }
 
     private LocalDate getDate() {

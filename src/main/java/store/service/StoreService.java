@@ -103,7 +103,7 @@ public class StoreService {
     }
 
     public boolean checkPromotionState(EnumMap<Item.PromotionResult, String> promotionResult) {
-        int nonDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.INSUFFICIENT_INVENTORY));
+        int nonDiscountCount = Integer.parseInt(promotionResult.get(Item.PromotionResult.NON_DISCOUNT_COUNT));
         return nonDiscountCount < 0;
     }
 

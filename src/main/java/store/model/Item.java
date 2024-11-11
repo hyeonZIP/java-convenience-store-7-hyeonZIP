@@ -40,15 +40,8 @@ public class Item {
     public EnumMap<PromotionResult, String> deductPromotionItem(final int requestQuantity, final int buy, final int get) {
         result.put(PromotionResult.IS_PROMOTION, "Y");
         result.put(PromotionResult.ITEM_NAME, name);
-        int remainQuantity = quantity / (buy + get) * (buy + get) - requestQuantity;
-        result.put(PromotionResult.INSUFFICIENT_INVENTORY, String.valueOf(remainQuantity));
-        int calculatePromotionNumber = Math.min(quantity, requestQuantity);
-        result.put(PromotionResult.DISCOUNT_COUNT, String.valueOf(calculatePromotionNumber / (buy + get)));
-        int nonDiscountCount = calculatePromotionNumber % (buy + get);//할인 못받는 갯수
-        result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(remainQuantity));
-        if (nonDiscountCount == buy) {
-            result.put(PromotionResult.FREE_ITEM, "1");
-        }
+        checkNonDiscountCount(requestQuantity, buy, get);
+        checkInventoryMoreThanQuantity(requestQuantity, buy, get);
         result.put(PromotionResult.REQUEST_QUANTITY, String.valueOf(requestQuantity));
         result.put(PromotionResult.ITEM_PRICE, String.valueOf(price));
         return result;
@@ -62,10 +55,23 @@ public class Item {
         return result;
     }
 
+    private void checkInventoryMoreThanQuantity(final int requestQuantity, final int buy, final int get) {
+        int calculatePromotionNumber = Math.min(quantity, requestQuantity);
+        result.put(PromotionResult.DISCOUNT_COUNT, String.valueOf(calculatePromotionNumber / (buy + get)));
+        int nonDiscountCount = calculatePromotionNumber % (buy + get);
+        if (nonDiscountCount == buy) {
+            result.put(PromotionResult.FREE_ITEM, "1");
+        }
+    }
+
+    private void checkNonDiscountCount(final int requestQuantity, final int buy, final int get) {
+        int remainQuantity = quantity / (buy + get) * (buy + get) - requestQuantity;
+        result.put(PromotionResult.NON_DISCOUNT_COUNT, String.valueOf(remainQuantity));
+    }
+
     public enum PromotionResult {
         ITEM_NAME,
         ITEM_PRICE,
-        INSUFFICIENT_INVENTORY,
         DISCOUNT_COUNT,
         NON_DISCOUNT_COUNT,
         FREE_ITEM,

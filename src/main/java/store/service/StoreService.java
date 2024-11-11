@@ -14,7 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ public class StoreService {
     private static final String HYPHEN = "-";
     private static final String LEFT_BRAKET = "[";
     private static final String RIGHT_BRAKET = "]";
+    private static final String DUMP = "DUMP";
     private final Items items;
     private final Promotions promotions;
     private final Store store;
@@ -66,11 +66,15 @@ public class StoreService {
             String nextLine = inventory.readLine();
             List<String> nextItem = getNextItem(nextLine);
             List<String> item = List.of(line.split(COMMA));
-            items.add(new Item(item));
-            if (!item.get(3).equals("null") && !item.get(0).equals(nextItem.get(0))) {
-                items.add(new Item(List.of(item.get(0), item.get(1), "0", "null")));
-            }
+            addRelation(item, nextItem);
             line = nextLine;
+        }
+    }
+
+    private void addRelation(List<String> item, List<String> nextItem) {
+        items.add(new Item(item));
+        if (!item.get(3).equals("null") && !item.get(0).equals(nextItem.get(0))) {
+            items.add(new Item(List.of(item.get(0), item.get(1), "0", "null")));
         }
     }
 
@@ -132,7 +136,7 @@ public class StoreService {
         if (nextLine != null) {
             return List.of(nextLine.split(COMMA));
         }
-        return Collections.emptyList();
+        return List.of(DUMP);
     }
 
     private LocalDate getDate() {

@@ -108,9 +108,11 @@ public class StoreController {
         try {
             if (storeService.checkPromotionState(promotionResult)) {
                 handleOutOfPromotion(promotionResult);
+                return;
             }
             if (storeService.checkGettingFreeItem(promotionResult)) {
                 handleFreeItem(promotionResult);
+                return;
             }
             storeService.makeReceiptBeforeMembership(promotionResult);
         } catch (IllegalArgumentException e) {

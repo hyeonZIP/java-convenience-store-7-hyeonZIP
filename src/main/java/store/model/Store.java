@@ -5,6 +5,8 @@ import java.util.EnumMap;
 import java.util.List;
 
 public class Store {
+    private static final double MEMBERSHIP_DISCOUNT = 0.3;
+    private static final int MAXIMUM_MEMBERSHIP_DISCOUNT = 8000;
     private final Items items;
     private final Promotions promotions;
     private ReceiptItems receiptItems;
@@ -55,10 +57,20 @@ public class Store {
 
     public void applyMembership() {
         int nonPromotionPrice = receipt.getOrDefault(Receipt.NON_PROMOTION_PRICE, 0);
-        int membershipDiscount = nonPromotionPrice * 30 / 100;
+        int membershipDiscount = checkMaximumMembershipDiscount(nonPromotionPrice);
         int paidMoney = receipt.getOrDefault(Receipt.TOTAL_PRICE, 0) - (membershipDiscount + receipt.getOrDefault(Receipt.PROMOTION_DISCOUNT, 0));
-        receipt.put(Receipt.MEMBERSHIP_DISCOUNT, membershipDiscount);
         receipt.put(Receipt.PAID_MONEY, paidMoney);
+    }
+
+    private int checkMaximumMembershipDiscount(int nonPromotionPrice) {
+        int membershipDiscount = (int) (nonPromotionPrice * MEMBERSHIP_DISCOUNT);
+        if (membership != MAXIMUM_MEMBERSHIP_DISCOUNT && membershipDiscount + membership > MAXIMUM_MEMBERSHIP_DISCOUNT) {
+            membershipDiscount = MAXIMUM_MEMBERSHIP_DISCOUNT - membership;
+            membership = MAXIMUM_MEMBERSHIP_DISCOUNT;
+        }
+        receipt.put(Receipt.MEMBERSHIP_DISCOUNT, membershipDiscount);
+        membership += membershipDiscount;
+        return membershipDiscount;
     }
 
     public EnumMap<Receipt, Integer> getReceipt() {
